@@ -1933,6 +1933,7 @@ function printPathNoParens(path, options, print, args) {
         ])
       );
     case "IfStatement": {
+      n.consequent = block_clause(n.consequent);
       const con = adjustClause(n.consequent, path.call(print, "consequent"));
       const opening = group(
         concat([
@@ -1969,6 +1970,7 @@ function printPathNoParens(path, options, print, args) {
           );
         }
 
+        n.alternate = block_clause(n.alternate);
         parts.push(
           "else",
           group(
@@ -1984,6 +1986,7 @@ function printPathNoParens(path, options, print, args) {
       return concat(parts);
     }
     case "ForStatement": {
+      n.body = block_clause(n.body);
       const body = adjustClause(n.body, path.call(print, "body"));
 
       // We want to keep dangling comments above the loop to stay consistent.
@@ -2029,6 +2032,7 @@ function printPathNoParens(path, options, print, args) {
       ]);
     }
     case "WhileStatement":
+      n.body = block_clause(n.body);
       return group(
         concat([
           "while (",
@@ -2043,6 +2047,7 @@ function printPathNoParens(path, options, print, args) {
         ])
       );
     case "ForInStatement":
+      n.body = block_clause(n.body);
       // Note: esprima can't actually parse "for each (".
       return group(
         concat([
@@ -2056,6 +2061,7 @@ function printPathNoParens(path, options, print, args) {
       );
 
     case "ForOfStatement":
+      n.body = block_clause(n.body);
       return group(
         concat([
           "for",
@@ -2070,6 +2076,7 @@ function printPathNoParens(path, options, print, args) {
       );
 
     case "DoWhileStatement": {
+      n.body = block_clause(n.body);
       const clause = adjustClause(n.body, path.call(print, "body"));
       const doBody = group(concat(["do", clause]));
       parts = [doBody];
@@ -5394,6 +5401,18 @@ function adjustClause(node, clause, forceSpace) {
   }
 
   return indent(concat([line, clause]));
+}
+
+function block_clause(node) {
+  // Forces a clause node to be contained in a block.
+  if (node.type === "BlockStatement") {
+    return node;
+  }
+  return {
+    type: "BlockStatement",
+    body: [node],
+    directives: []
+  };
 }
 
 function nodeStr(node, options, isFlowOrTypeScriptDirectiveLiteral) {

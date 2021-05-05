@@ -20,6 +20,7 @@ javascript codebase to [JSLint](https://jslint.com/).
 - Shortens URLs in comments
 - Replaces `template ${literals}` with [fulfill](https://github.com/douglascrockford/fulfill)
 - Break too-long string literals in half
+- Wraps if/else/while/for/do clauses in a block
 
 ## What it does not do (yet)
 - Insert `/*jslint node, browser */` etc
@@ -29,7 +30,6 @@ javascript codebase to [JSLint](https://jslint.com/).
 - Escape hyphens in regexps character classes
 - Replace unused "err" in catch clause with "ignore"
 - Naked blocks around cases in switch
-- Undeclared 'it'
 - Use double quotes, not single quotes
 
 ## What it will never do
